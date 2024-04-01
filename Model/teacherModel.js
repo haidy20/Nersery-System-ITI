@@ -27,5 +27,4 @@ const schema =new mongoose.Schema({
     
     role: { type: String, enum: ['admin', 'teacher'], required: true},
 })
-
 module.exports = mongoose.model("teachers",schema);

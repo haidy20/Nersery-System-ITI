@@ -39,7 +39,7 @@ const schema =new mongoose.Schema({
         type:addressSchema,
         required:true
     }
-    /////////////////
+    /////////////////////
     ,
     image:{
         type:String,
@@ -52,5 +52,5 @@ schema.plugin(AutoIncrement,{
     //  inc_field: "_id"
  
 
-    //2- register for schema in mongoose
+// register for schema in mongoose
 module.exports = mongoose.model("childern",schema);

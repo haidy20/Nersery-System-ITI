@@ -14,7 +14,6 @@ const teacherRoute=require("./Routes/teacherRoute");
 const childRoute=require("./Routes/childRoute");
 const classRoute=require("./Routes/classRoute");
 const swaggerSpec = require('./swaggerConfig');
-// const loginRoute = require("./Routes/authentication");
 
 // image variable
 const storage= multer.diskStorage({
@@ -54,15 +53,6 @@ mongoose.connect(process.env.DB_URL || "mongodb://127.0.0.1:27017/nursrySystemDB
             console.log("DB Problem: "+error);
         })
 
-// Define a route to handle POST requests to /students
-
-//middlewares
-// const morgan = require('morgan');
-// Morgan middlewares
-// server.use(
-//     morgan("tiny")
-// );
-
 // Middleware for CORS
 // const Cors = {
 //     origin: 'http:localhost:8080',
@@ -76,17 +66,6 @@ server.use((request,response,next)=>{
     console.log(request.url,request.method);
     next();
 });
-
-
-
-
-
-
-
-// server.post('/students', (request, response) => {
-//     response.status(200).json({ data: 'Student added successfully' });
-// });
-
 
 ////////////////////End Points(Routes)////////////////
 server.use("/images",express.static(path.join(__dirname,"images")));

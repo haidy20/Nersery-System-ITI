@@ -11,7 +11,7 @@ exports.getAllClasses=(request,response,next)=>{
     })
     .catch((error) => next(error));
 }
-
+// ///////////////////////////////////////////////////////
 exports.getClassById = (req, res, next) => {
     const classId = req.params.id;
     classSchema.findById(classId)
@@ -24,7 +24,7 @@ exports.getClassById = (req, res, next) => {
         .catch((error) => next(error));
 };
 
-
+// /////////////////////////////////////////////////////////////
 exports.addClass = (req, res, next) => {
     const newClass = new classSchema(req.body);
     newClass.save()
@@ -33,7 +33,7 @@ exports.addClass = (req, res, next) => {
         })
         .catch((error) => next(error));
 };
-
+// ///////////////////////////////////////////////////////////////
 exports.updateClass = (req, res, next) => {
     const classId = req.params.id; // Ensure this value is correct
     // if (isNaN(classId)) { // Check if classId is not a number
@@ -49,7 +49,7 @@ exports.updateClass = (req, res, next) => {
         .catch((error) => next(error));
 };
 
-
+// ///////////////////////////////////////////////////////////////////
 exports.deleteClass = (req, res, next) => {
     const classId = req.params.id;
     classSchema.findByIdAndDelete(classId)
@@ -62,7 +62,7 @@ exports.deleteClass = (req, res, next) => {
         .catch((error) => next(error));
 };
 
-// //////////////////////////
+// ////////////////////////////////////////////////////
 exports.getChildInfo = (req, res, next) => {
     const childId = req.params.id;
     try {
@@ -86,7 +86,7 @@ exports.getChildInfo = (req, res, next) => {
     }
   };
 
-///////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
 
   exports.getSupervisorInfo = (request, response, next) => {
     const teacherId = request.params.id;

@@ -4,6 +4,7 @@ const childernSchema=require("./../Model/childModel");
 const fs = require('fs');
 // const path= require("path");
 // /////////////////////////////////////////////
+
 /**
  * @swagger
  * /childern:
@@ -76,38 +77,38 @@ exports.getChildById = (req, res, next) => {
  *       - childern
  *     security:
  *       - bearerAuth: [http, Bearer]  # Apply bearerAuth security scheme
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               fullName:
- *                 type: string
- *                 description: The full name of the child.
- *               age:
- *                 type: integer
- *                 description: The age of the child.
- *               level:
- *                 type: string
- *                 description: The educational level of the child.
- *               address:
- *                 type: object
- *                 properties:
- *                   city:
- *                     type: string
- *                     description: The city of the child's address.
- *                   street:
- *                     type: string
- *                     description: The street of the child's address.
- *                   building:
- *                     type: integer
- *                     description: The building number of the child's address.
- *               image:
- *                 type: string
- *                 format: binary
- *                 description: The image file of the child.
+ *     consumes:
+ *       - multipart/form-data
+ *     parameters:
+ *       - name: fullName
+ *         in: formData
+ *         type: string
+ *         description: The full name of the child.
+ *       - name: age
+ *         in: formData
+ *         type: integer
+ *         description: The age of the child.
+ *       - name: level
+ *         in: formData
+ *         type: string
+ *         description: The educational level of the child.
+ *       - name: address.city
+ *         in: formData
+ *         type: string
+ *         description: The city of the child's address.
+ *       - name: address.street
+ *         in: formData
+ *         type: string
+ *         description: The street of the child's address.
+ *       - name: address.building
+ *         in: formData
+ *         type: integer
+ *         description: The building number of the child's address.
+ *       - name: image
+ *         in: formData
+ *         format: binary
+ *         type: file
+ *         description: The image file of the child.
  *     responses:
  *       '201':
  *         description: Child added successfully
@@ -123,13 +124,10 @@ exports.getChildById = (req, res, next) => {
  *         description: Error occurred
  */
 
-
 exports.addChild=(request,response,next)=>{
-    // response.json({body:request.body, file:request.file})
     const { fullName, age, level, address } = request.body;
     const image = request.file.filename;
 
-    // Creating a new instance of childernSchema
     const child = new childernSchema({
         fullName: fullName,
         age: age,
@@ -216,15 +214,13 @@ exports.updateChild = async (req, res, next) => {
     const newData = req.body;
     let imageUrl = '';
      console.log(req.file.originalname);
-    // Check if a new image file is uploaded
+    
     if (req.file) {
         imageUrl = req.file.originalname;
-        newData.Image = imageUrl; // Update the Image field in the newData object
+        newData.Image = imageUrl; 
     }
-    // Check if there's an existing image and delete it if new image is uploaded
     
     try {
-        // Find the teacher by ID
         let updateChild = await childernSchema.findById(id);
   
         if (!updateChild) {
@@ -232,21 +228,14 @@ exports.updateChild = async (req, res, next) => {
         }
         
         if (updateChild.Image && imageUrl !== updateChild.Image) {
-          fs.unlinkSync(updateChild.Image); // Delete the old image file
+          fs.unlinkSync(updateChild.Image);
       }
-      
-  
-        // If a new password is provided, hash it and update
         if (newData.password) {
             const hashedPassword = await bcrypt.hash(newData.password, 10);
             newData.password = hashedPassword;
         }
         
-      
-        // Update the teacher object with the new data
         Object.assign(updateChild, newData);
-  
-        // Save the updated teacher to the database
         updateChild = await updateChild.save();
   
         res.status(200).json({ message: 'Child updated successfully', data: newData });

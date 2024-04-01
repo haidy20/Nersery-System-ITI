@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
-
 const schema =new mongoose.Schema({
     _id:{
         type:Number,
@@ -24,6 +23,5 @@ const schema =new mongoose.Schema({
 schema.plugin(AutoIncrement,{
     id: 'class_counter',});
     // inc_field: "_id"
-
 
 module.exports = mongoose.model("classes",schema);

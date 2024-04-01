@@ -3,11 +3,7 @@ const teachreSchema=require("./../Model/teacherModel");
 const classSchema=require("./../Model/classModel");
 const bcrypt = require('bcrypt');
 const fs = require('fs');
-// const path= require("path");
 
-
-// const saltRounds = 10;
-// /////////////////////////////////////
 
 /**
  * @swagger
@@ -118,38 +114,22 @@ exports.getTeacherById = (req, res, next) => {
     try {
       // Hash the password
       const hashedPassword = await bcrypt.hash(password, 10); 
-  
-      // Create a new teacher object with hashed password
+
       const newTeacher = new teachreSchema({
         fullName: fullName,
         email: email,
         password: hashedPassword,
-        image: image, // Store the filename of the image
+        image: image, 
         role: role
       });
   
-      // Save the new teacher to the database
       await newTeacher.save();
   
       res.status(200).json({ message: 'Teacher inserted successfully' });
     } catch (error) {
-      next(error); // Pass any errors to the error handling middleware
+      next(error); 
     }
   };
-
-  // ///////////////////////
-  //   exports.updateteacher = (req, res, next) => {
-  //     const id = req.params.id;
-  //     teachreSchema.findByIdAndUpdate(id,req.body,{ new: true }) 
-  //     .then((teacher) => {
-  //         if (!teacher) {
-  //             return res.status(404).json({ message: "Teacher not found" });
-  //         }
-  //         res.status(200).json({ teacher });
-  //     })
-  //     .catch((error) => next(error));
-  // }
-
 
 //////////////////////////////////////////////////////
 /**
@@ -211,42 +191,33 @@ exports.updateteacher = async (req, res, next) => {
   //   Body:req.body ,
   //   File: req.file 
   //   })
-  const id = req.body._id;
+  const id = req.params.id;
+  console.log(req.params);
   const newData = req.body;
   let imageUrl = '';
 
    console.log(req.file.originalname);
-  // Check if a new image file is uploaded
+
   if (req.file) {
       imageUrl = req.file.originalname;
-      newData.Image = imageUrl; // Update the Image field in the newData object
+      newData.Image = imageUrl; 
   }
-  // Check if there's an existing image and delete it if new image is uploaded
   
   try {
-      // Find the teacher by ID
       let updateteacher = await teachreSchema.findById(id);
 
       if (!updateteacher) {
           return res.status(404).json({ message: 'Teacher not found' });
       }
-      
       if (updateteacher.Image && imageUrl !== updateteacher.Image) {
-        fs.unlinkSync(updateteacher.Image); // Delete the old image file
+        fs.unlinkSync(updateteacher.Image); 
     }
-    
-
       // If a new password is provided, hash it and update
       if (newData.password) {
           const hashedPassword = await bcrypt.hash(newData.password, 10);
           newData.password = hashedPassword;
       }
-      
-    
-      // Update the teacher object with the new data
       Object.assign(updateteacher, newData);
-
-      // Save the updated teacher to the database
       updateteacher = await updateteacher.save();
 
       res.status(200).json({ message: 'Teacher updated successfully', data: newData });
@@ -303,7 +274,7 @@ exports.updateteacher = async (req, res, next) => {
         });
 };
 
-///////////////////////////////////////////
+/////////////////////////////////////////////////
 
 /**
  * @swagger
@@ -313,6 +284,8 @@ exports.updateteacher = async (req, res, next) => {
  *     description: Retrieve information about all supervisors.
  *     tags:
  *       - Supervisors
+ *     security:
+ *       - bearerAuth: [http, Bearer]
  *     responses:
  *       '200':
  *         description: Successfully retrieved information about supervisors.
@@ -326,12 +299,13 @@ exports.updateteacher = async (req, res, next) => {
  *       '500':
  *         description: Internal server error.
  */
+
 exports.getAllsupervisors = (req, res, next) => {
   classSchema.find({})
     .populate({
-      path: 'supervisor', // Update to match the field name in your classSchema
+      path: 'supervisor', 
       select: { fullName: 1 },
-      model: 'teachers' // Make sure this matches your teachers model name
+      model: 'teachers' 
     })
     .then(data => {
       let supervisors = data.map(item => item.supervisor);
@@ -342,7 +316,6 @@ exports.getAllsupervisors = (req, res, next) => {
 
 
  /////////////////////////////////////////
-
 /**
  * @swagger
  * components:
@@ -354,15 +327,14 @@ exports.getAllsupervisors = (req, res, next) => {
  * 
  */
 
-
- /**
+/**
  * @swagger
  * /changepassword:
  *   patch:
  *     summary: Change password for a teacher
  *     tags: [teachers]
  *     security:
- *       - bearerAuth: []
+ *       - bearerAuth: [http, Bearer]
  *     requestBody:
  *       required: true
  *       content:
@@ -395,7 +367,7 @@ exports.getAllsupervisors = (req, res, next) => {
 //  Change password of the teacher
 
 exports.changepassword = async (req, res, next) =>{
-  const { password, _id } = req.body; // Extract password and _id from req.body
+  const { password, _id } = req.body; 
   try {
       let teacher = await teachreSchema.findById(_id);
       if (!teacher) {

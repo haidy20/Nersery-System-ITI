@@ -5,14 +5,10 @@ const validateMW = require("./../Core/validations/validateMW");
 const teacherValidation = require("./../Core/validations/teacherValidation");
 const { isAdmin } = require("../Core/authenticationMW");
 
-
-
-
 router
   .route("/teachers")
-  // .get(controller.getAllteachers)
   .get(
-    [isAdmin],
+    isAdmin,
      controller.getAllteachers)
   .post(teacherValidation.add, validateMW, controller.addteacher)
 
@@ -23,7 +19,6 @@ router.route("/teachers/:id")
   .get(controller.getTeacherById)
   .patch(teacherValidation.update, validateMW, controller.updateteacher)
   .delete(teacherValidation.delete, validateMW, controller.deleteteacher);
-
 
   router.route("/changepassword")
   .patch(controller.changepassword)
